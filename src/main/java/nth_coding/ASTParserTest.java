@@ -27,7 +27,7 @@ public class ASTParserTest {
 
     public static void parse(String filename) throws IOException {
         String fileName = filename + ".java";
-        String path = "src/main/java/nth_coding.testcase/" + fileName;
+        String path = "src/main/java/nth_coding/testcase/" + fileName;
         String str = readFileToString(path);
 
         ASTParser parser = ASTParser.newParser(AST.JLS18);
@@ -36,11 +36,10 @@ public class ASTParserTest {
 
         parser.setBindingsRecovery(true);
 
-        Map options = JavaCore.getOptions();
+        Hashtable<String, String> options = JavaCore.getOptions();
         parser.setCompilerOptions(options);
 
-        String unitName = fileName;
-        parser.setUnitName(unitName);
+        parser.setUnitName(fileName);
 
         String[] sources = {"src"};
         String[] classpath = {"target/classes"};
@@ -65,9 +64,8 @@ public class ASTParserTest {
 class TypeFinderVisitor extends ASTVisitor {
     private String getMethodInfo(IMethodBinding methodBinding) throws IOException {
 
-        StringBuilder str = new StringBuilder("\nMethod: " + methodBinding +
-                "\n-> From class: " + methodBinding.getDeclaringClass().getName());
-        return str.toString();
+        return "\nMethod: " + methodBinding +
+                "\n-> From class: " + methodBinding.getDeclaringClass().getName();
     }
 
     public boolean visit(MethodInvocation node) {

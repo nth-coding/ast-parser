@@ -6,8 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="astparser" />
+        <module name="ast-parser" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ast-parser" target="19" />
+      <module name="astparser" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>
