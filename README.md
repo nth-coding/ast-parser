@@ -1,4 +1,4 @@
-# ast-parser
+# Ast-parser
 Using JDT and try to bind method 
 
 # How to use
