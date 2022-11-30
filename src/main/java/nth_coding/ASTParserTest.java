@@ -3,12 +3,16 @@ package nth_coding;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.core.dom.*;
 
 public class ASTParserTest {
+    public static List<String> output = new ArrayList<>();
     public static String readFileToString(String filePath) throws IOException {
         StringBuilder fileData = new StringBuilder(1000);
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -25,9 +29,8 @@ public class ASTParserTest {
         return fileData.toString();
     }
 
-    public static void parse(String filename) throws IOException {
+    public static CompilationUnit createCU(String filename, String path) throws IOException {
         String fileName = filename + ".java";
-        String path = "src/main/java/nth_coding/testcase/" + fileName;
         String str = readFileToString(path);
 
         ASTParser parser = ASTParser.newParser(AST.JLS18);
@@ -48,35 +51,39 @@ public class ASTParserTest {
         parser.setSource(str.toCharArray());
 
         CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+        return cu;
+    }
 
+    public static void parse(CompilationUnit cu) {
         if (cu.getAST().hasBindingsRecovery()) {
             System.out.println("Binding activated.\n----------------");
         }
 
-        TypeFinderVisitor v = new TypeFinderVisitor();
+        MethodFinderVisitor v = new MethodFinderVisitor();
         cu.accept(v);
     }
-    public static void main(String[] args) throws IOException {
-        parse("Apple");
-    }
-}
 
-class TypeFinderVisitor extends ASTVisitor {
-    private String getMethodInfo(IMethodBinding methodBinding) throws IOException {
-
-        return "\nMethod: " + methodBinding +
-                "\n-> From class: " + methodBinding.getDeclaringClass().getName();
-    }
-
-    public boolean visit(MethodInvocation node) {
-        IMethodBinding methodBinding = node.resolveMethodBinding();
-        if (methodBinding == null) return false;
-        try {
-            System.out.println(getMethodInfo(methodBinding));
-        } catch (IOException e) {
-//            System.out.println("err");
+    public String getOutputAsString() {
+        StringBuilder str = new StringBuilder();
+        for (String s : output) {
+            str.append(s);
         }
-        return true;
+        return str.toString();
+    }
+
+    public void getOutputAsFile(String filename) throws IOException {
+        OutputStream os = Files.newOutputStream(Paths.get(filename));
+        for (String op : output) {
+            os.write(op.getBytes());
+        }
+        os.flush();
+
+        //close the stream
+        os.close();
+    }
+
+    public ASTParserTest(String filename, String path) throws IOException {
+        CompilationUnit compilationUnit = createCU(filename, path);
+        parse(compilationUnit);
     }
 }
-
