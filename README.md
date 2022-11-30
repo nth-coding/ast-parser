@@ -9,7 +9,7 @@ You need to init `nth_coding.ASTParserTest` with the file name and filepath (pat
 
 # Output
 
-For example, we try it with this .java file
+For example, we try it with these .java file
 <h4 a><strong><code>Apple.java</code></strong></h4>
 
 ```
